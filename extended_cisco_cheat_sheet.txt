@@ -1,0 +1,115 @@
+
+Extended Cisco Commands & Lab Exam Cheat Sheet
+==============================================
+
+I. General Router Setup Commands
+--------------------------------
+Router> enable
+Router# configure terminal
+Router(config)# hostname <name>
+Router(config)# do write
+
+II. Interface Configuration
+---------------------------
+Router(config)# interface fastEthernet 0/0
+Router(config-if)# ip address 192.168.1.1 255.255.255.0
+Router(config-if)# no shutdown
+Router(config-if)# exit
+
+Router(config)# interface serial 0/0/0
+Router(config-if)# ip address 10.0.0.1 255.255.255.252
+Router(config-if)# clock rate 64000         # DCE side only
+Router(config-if)# no shutdown
+Router(config-if)# exit
+
+III. Subnetting Tips
+--------------------
+/30 → 2 usable hosts
+/29 → 6 usable hosts
+/28 → 14 usable hosts
+/27 → 30 usable hosts
+/26 → 62 usable hosts
+/25 → 126 usable hosts
+/24 → 254 usable hosts
+/23 → 510 usable hosts
+/22 → 1022 usable hosts
+/21 → 2046 usable hosts
+
+IV. Static Routing
+------------------
+Router(config)# ip route <destination> <mask> <next-hop-IP>
+Example:
+Router(config)# ip route 192.168.2.0 255.255.255.0 10.0.0.2
+
+V. OSPF Configuration (All Area 0)
+----------------------------------
+Router(config)# router ospf 1
+Router(config-router)# network <IP> <wildcard-mask> area 0
+Example:
+Router(config-router)# network 192.168.1.0 0.0.0.255 area 0
+Router(config-router)# exit
+Router(config)# do write
+
+VI. DHCP Configuration on Router
+--------------------------------
+Router(config)# ip dhcp excluded-address 192.168.1.1 192.168.1.10
+Router(config)# ip dhcp pool MYPOOL
+Router(dhcp-config)# network 192.168.1.0 255.255.255.0
+Router(dhcp-config)# default-router 192.168.1.1
+Router(dhcp-config)# dns-server 8.8.8.8
+Router(dhcp-config)# exit
+
+VII. BGP Basic Commands
+-----------------------
+Router(config)# router bgp <your-ASN>
+Router(config-router)# neighbor <IP> remote-as <ASN>
+Router(config-router)# network <network> mask <netmask>
+
+VIII. Cable Types in Packet Tracer
+----------------------------------
+PC ↔ Switch     | Straight-through
+Switch ↔ Router | Straight-through
+PC ↔ PC         | Crossover
+Switch ↔ Switch | Crossover
+Router ↔ Router | Serial (DCE/DTE)
+
+IX. Useful Tools (PC CLI)
+-------------------------
+PC> ipconfig
+PC> ping <destination-IP>
+
+X. OSPF VLSM Lab Scenario Summary
+---------------------------------
+Startup Merging: CMP X, CMP Y, CMP Z
+
+- CMP X: 180.84.92.0/21 → 3 rooms → /30 per room (6 IPs used total)
+- CMP Y: 122.72.0.0/15 → 3 rooms → /30 per room
+- CMP Z: 220.91.121.160/27 → 3 rooms → /30 per room
+
+Router-to-router links:
+- Use 220.91.121.80/28 block → each /30 subnet for point-to-point serial link
+
+OSPF Requirements:
+- Use only OSPF Process ID 1
+- All routers in Area 0
+- Advertise only directly connected subnets
+- Use Serial DCE/DTE for router-to-router connections
+
+CLI Configuration Snippet for OSPF (Example):
+--------------------------------------------
+enable
+configure terminal
+router ospf 1
+network 180.84.92.0 0.0.7.255 area 0
+network 220.91.121.80 0.0.0.3 area 0
+exit
+do write
+
+XI. Final Exam Submission Checklist
+-----------------------------------
+✔ Packet Tracer File: RollNo.pkt
+✔ OSPF CLI Commands: Screenshots or .txt (e.g., R1_OSPF.txt)
+✔ 5 Ping screenshots from different subnets
+✔ Labeled and neat topology (Router, Switches, PCs)
+✔ Text annotations for subnets
+✔ At most 2 hops between any two PCs
